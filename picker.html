@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Terminal Picker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="overlay hidden" id="loading-overlay"><div class="spinner"></div><h3 id="loading-text">Cargando...</h3></div>
+
+    <main class="mobile-layout">
+        <header class="mobile-header">
+            Picker: <span id="current-picker-name">Picker_01</span>
+        </header>
+
+        <section class="mobile-content">
+            
+            <div id="view-queue" class="panel active">
+                <h3 class="mb-1">Mis Batches Asignados</h3>
+                <div id="my-queue-list">
+                    </div>
+                <button class="btn-secondary mt-1" id="btn-refresh-queue" style="width: 100%">Actualizar Lista</button>
+            </div>
+
+            <div id="view-solicitar" class="panel hidden">
+                <h3 class="mb-1">Consultar Pieza</h3>
+                <div class="card">
+                    <div class="input-group">
+                        <label>Escanear SHOP_FLOOR_ID</label>
+                        <input type="text" id="scan-sfid" class="scan-input" placeholder="||||||||||||||||" autocomplete="off">
+                    </div>
+                    <button id="btn-search-rem" class="btn-primary">Buscar Asignación</button>
+                </div>
+                <div id="scan-result" class="mt-1"></div>
+            </div>
+
+            <div id="view-crear" class="panel hidden">
+                <h3 class="mb-1">Alta de Remanente</h3>
+                <div class="card">
+                    <form id="form-crear-rem">
+                        <div class="input-group">
+                            <label>Fabric PCN</label>
+                            <input type="text" id="new-pcn" required>
+                        </div>
+                        <div class="grid-inputs">
+                            <div class="input-group">
+                                <label>Width</label>
+                                <input type="number" step="0.01" id="new-width" required>
+                            </div>
+                            <div class="input-group">
+                                <label>Cells</label>
+                                <input type="number" id="new-cells" required>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Ubicación (Rack)</label>
+                            <input type="text" id="new-location" placeholder="Ej: RACK-A1" required>
+                        </div>
+                        <button type="submit" class="btn-primary mt-1">Generar Etiqueta (Guardar)</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="view-queue" class="panel active">
+                <h3 class="mb-1">Mis Batches Asignados</h3>
+                <div id="my-queue-list"></div>
+                <button class="btn-secondary mt-1" id="btn-refresh-queue" style="width: 100%">Actualizar Lista</button>
+            </div>
+
+            <div id="view-batch-detail" class="panel hidden">
+                <button class="btn-secondary mb-1" onclick="backToQueue()">← Volver a la Lista</button>
+                <h3 id="detail-batch-title" class="mb-1">Batch: </h3>
+                
+                <div id="batch-remnants-container">
+                    </div>
+            </div>
+
+        </section>
+
+        <nav class="mobile-nav">
+            <button class="mobile-nav-btn active" data-target="view-queue">QUEUE</button>
+            <button class="mobile-nav-btn" data-target="view-solicitar">BUSCAR</button>
+            <button class="mobile-nav-btn" data-target="view-crear">CREAR</button>
+        </nav>
+    </main>
+
+    <script src="picker.js"></script>
+</body>
+</html>

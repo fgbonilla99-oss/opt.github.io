@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisor - Panel de Control</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="overlay hidden" id="loading-overlay">
+        <div class="spinner"></div>
+        <h3 id="loading-text">Cargando...</h3>
+    </div>
+
+    <main class="layout-dashboard">
+        <aside class="sidebar" style="background-color: #1e293b; color: white;">
+            <div class="brand" style="color: #60a5fa;">Gerencia / Supervisor</div>
+            <nav id="sup-nav">
+                <button class="nav-btn active" data-target="panel-dash" style="color:white">Dashboard Pickers</button>
+                <button class="nav-btn" data-target="panel-condiciones" style="color:white">Condiciones de Familia</button>
+            </nav>
+            <button id="logout-btn" class="btn-primary mt-auto">Cerrar Sesión</button>
+        </aside>
+
+        <section class="content-area">
+            
+            <div id="panel-dash" class="panel active">
+                <h2>Estado de la Operación (Pickers)</h2>
+                
+                <div class="card mb-1" style="border-left: 5px solid var(--primary); background: #eff6ff;">
+                    <h3 style="color: var(--primary);">Desperdicio de Lotes Activos (Scrap)</h3>
+                    <div style="font-size: 3rem; font-weight: bold; color: #1e3a8a;" id="dash-scrap-pct">0.0%</div>
+                    <p class="text-sm text-muted">Mide el scrap generado por el algoritmo en los lotes que actualmente están en pista de corte.</p>
+                </div>
+
+                <div class="card bg-light mb-1">
+                    <p class="text-muted">Vista en tiempo real de los lotes asignados a la pista de corte.</p>
+                    <button id="btn-refresh-dash" class="btn-secondary mt-1">Actualizar Información</button>
+                </div>
+                
+                <div id="pickers-dashboard" class="grid-maps mt-1">
+                    </div>
+            </div>
+
+            <div id="panel-condiciones" class="panel hidden">
+                <h2>Reglas y Condiciones de Optimización</h2>
+                
+                <div class="grid-2-col">
+                    <div class="card">
+                        <h3>Nueva / Editar Regla</h3>
+                        <p class="text-sm text-muted mb-1">Si una familia no existe en esta tabla, el optimizador asumirá 0 tolerancia (cortes exactos) y usará 25w / 45c como mínimos por defecto para offcuts.</p>
+                        
+                        <form id="form-condicion">
+                            <div class="input-group">
+                                <label>Familia (Ej: SANS)</label>
+                                <input type="text" id="cond-fam" required style="text-transform: uppercase;">
+                            </div>
+                            
+                            <div class="grid-inputs">
+                                <div class="input-group">
+                                    <label>Min Width</label>
+                                    <input type="number" step="0.01" id="cond-min-w" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Min Cells</label>
+                                    <input type="number" id="cond-min-c" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Tol Width (lados)</label>
+                                    <input type="number" step="0.01" id="cond-tol-w" required>
+                                </div>
+                                <div class="input-group">
+                                    <label>Tol Cells</label>
+                                    <input type="number" id="cond-tol-c" required>
+                                </div>
+                            </div>
+                            
+                            <div class="input-group">
+                                <label>PCNs Asociados (Separados por coma)</label>
+                                <textarea id="cond-pcns" rows="3" placeholder="Ej: F17174A949, E1174A537, X889..." required style="width:100%; border:1px solid var(--border); border-radius:var(--radius); padding:0.5rem; resize: vertical;"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary mt-1">Guardar Regla</button>
+                        </form>
+                    </div>
+
+                    <div class="card">
+                        <h3>Familias Configuradas</h3>
+                        <div class="table-container mt-1">
+                            <table class="data-table" id="tabla-condiciones">
+                                <thead>
+                                    <tr>
+                                        <th>Familia / PCNs</th>
+                                        <th>Tolerancias (W / C)</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+    
+    <script src="supervisor.js"></script>
+</body>
+</html>

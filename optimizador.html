@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opt - HN R1.0.5</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="loading-overlay" class="overlay hidden">
+        <div class="spinner"></div>
+        <h3 id="loading-text">Procesando...</h3>
+    </div>
+
+    <div id="panel-asignar" class="panel hidden">
+        <h2>Asignar Batch a Pickers</h2>
+        <div class="grid-2-col">
+            <div class="card">
+                <h3>1. Selecciona un Batch</h3>
+                <div id="batch-grid" class="selection-grid mt-1">
+                    </div>
+            </div>
+            <div class="card">
+                <h3>2. Selecciona un Picker</h3>
+                <div id="picker-grid" class="selection-grid mt-1">
+                    <div class="interactive-card picker-card" data-id="Picker_01"><strong>Picker 01</strong><br><span class="text-sm text-muted">Disponible</span></div>
+                    <div class="interactive-card picker-card" data-id="Picker_02"><strong>Picker 02</strong><br><span class="text-sm text-muted">Disponible</span></div>
+                    <div class="interactive-card picker-card" data-id="Picker_03"><strong>Picker 03</strong><br><span class="text-sm text-muted">Disponible</span></div>
+                </div>
+                <button id="btn-execute-asignar" class="btn-primary mt-1" disabled>Confirmar Asignación</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="layout-dashboard">
+        <aside class="sidebar">
+            <div class="brand">Optimizador</div>
+            <nav id="opt-nav">
+                <button class="nav-btn active" data-target="panel-optimizar">Optimizador</button>
+                <button class="nav-btn" data-target="panel-asignar">Asignar Batch</button>
+                <button class="nav-btn" data-target="panel-reasignar">Re-asignar</button>
+                <button class="nav-btn" data-target="panel-baja">Baja Remanente</button>
+                <button class="nav-btn" data-target="panel-alertas">Alertas</button>
+            </nav>
+            <button id="logout-btn" class="btn-secondary mt-auto">Salir</button>
+        </aside>
+
+        <section class="content-area">
+            
+            <div id="panel-optimizar" class="panel active">
+                <h2> - Ingreso de ordenes</h2>
+                <div class="card" id="step-1-card">
+                    <p class="text-muted mb-1">Orden de columnas: <b>BATCH_ID | SHOP_FLOOR_ID | FABRIC_PCN | WIDTH | CELLS</b></p>
+                    <textarea id="excel-data" rows="8" placeholder="Pega los datos aquí..."></textarea>
+                    <button id="btn-pre-optimize" class="btn-primary mt-1">Generar Mapas de Optimización</button>
+                </div>
+
+                <div id="optimization-preview" class="hidden mt-1">
+                    <h2>2. Mapas de Corte y Asignación</h2>
+                    <div class="card bg-light mb-1">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <p id="summary-text"><strong>Resumen:</strong> 0 órdenes leídas.</p>
+                            <button id="btn-view-pdf" class="btn-secondary hidden" style="margin-right: 0.5rem;">Ver PDF / Imprimir</button>
+                            <button id="btn-save-batch" class="btn-success">Confirmar y Guardar en BD</button>
+                        </div>
+                    </div>
+                    <div id="maps-container" class="grid-maps"></div>
+                </div>
+            </div>
+
+            <div id="panel-asignar" class="panel hidden">
+                <h2>Asignar Batch a Pickers</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <label>Seleccionar Batch Pendiente</label>
+                        <select id="select-batch-asignar">
+                            <option value="">Cargando batches...</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Seleccionar Picker</label>
+                        <select id="select-picker">
+                            <option value="Picker_01">Picker 01</option>
+                            <option value="Picker_02">Picker 02</option>
+                            <option value="Picker_03">Picker 03</option>
+                        </select>
+                    </div>
+                    <button id="btn-execute-asignar" class="btn-primary mt-1" onclick="ejecutarAsignacion()" disabled>Asignar Lote</button>
+                </div>
+            </div>
+
+            <div id="panel-reasignar" class="panel hidden">
+                <h2>Re-asignar Batch</h2>
+                <div class="card">
+                    <div class="input-group">
+                        <label>Batch actualmente asignado</label>
+                        <select id="select-batch-reasignar">
+                            <option value="">Cargando batches asignados...</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Transferir a Picker</label>
+                        <select id="select-picker-re">
+                            <option value="Picker_01">Picker 01</option>
+                            <option value="Picker_02">Picker 02</option>
+                            <option value="Picker_03">Picker 03</option>
+                        </select>
+                    </div>
+                    <button id="btn-execute-reasignar" class="btn-primary mt-1" onclick="ejecutarReasignacion()" disabled>Ejecutar Re-asignación</button>
+                </div>
+            </div>
+
+            <div id="panel-baja" class="panel hidden">
+                <h2>Dar de Baja Remanente</h2>
+                <div class="card">
+                    <p class="text-muted mb-1">Solo se pueden dar de baja remanentes con estatus "Disponible".</p>
+                    <div class="input-group">
+                        <label>ID del Remanente</label>
+                        <input type="text" id="baja-remanente-id" placeholder="Ej: REM-10294">
+                    </div>
+                    <div class="input-group">
+                        <label>Motivo de Baja</label>
+                        <select id="baja-motivo">
+                            <option value="dañado">Material Dañado</option>
+                            <option value="extraviado">Extraviado</option>
+                            <option value="ajuste">Ajuste de Inventario</option>
+                        </select>
+                    </div>
+                    <button class="btn-danger mt-1" disabled>Dar de Baja (Próximamente)</button>
+                </div>
+            </div>
+
+            <div id="panel-alertas" class="panel hidden">
+                <h2>Solicitudes de Re-asignación</h2>
+                <div class="card bg-light">
+                    <p class="text-muted">Piezas que no encontraron su remanente en el rack.</p>
+                </div>
+                <div id="alert-list" class="grid-maps mt-1">
+                    </div>
+            </div>
+
+        </section>
+    </main>
+    <script src="optimizador.js"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Optimizador de Telas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="overlay hidden" id="loading-overlay"><div class="spinner"></div><h3 id="loading-text">Autenticando...</h3></div>
+
+    <main id="login-view" class="view-container active" style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <div class="login-card">
+            <h1>Optimizador de Telas</h1>
+            <p>Inicia sesión en tu cuenta</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn-primary">Ingresar</button>
+            </form>
+            <div id="login-error" style="color:red; margin-top:10px; font-size:14px;"></div>
+        </div>
+    </main>
+
+    <script>
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzjthPZvtAH-R_H1h5GNMe0p5-8ofbODHenwXBHTmRArn_phXq8lwbwRq28s3_iO11/exec'; // <- REEMPLAZA
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errDiv = document.getElementById('login-error');
+            const loader = document.getElementById('loading-overlay');
+            
+            errDiv.textContent = '';
+            loader.classList.remove('hidden');
+
+            try {
+                const response = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST', body: JSON.stringify({ action: 'login', payload: { username, password } })
+                });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Guardar sesión segura
+                    sessionStorage.setItem('userSession', JSON.stringify(result.data));
+                    
+                    // Redirección según ROL
+                    if (result.data.role.toLowerCase() === 'optimizador') window.location.href = 'optimizador.html';
+                    else if (result.data.role.toLowerCase() === 'picker') window.location.href = 'picker.html';
+                    else if (result.data.role.toLowerCase() === 'supervisor') window.location.href = 'supervisor.html';
+                    else errDiv.textContent = "Rol no configurado en el sistema.";
+                } else {
+                    errDiv.textContent = result.message;
+                }
+            } catch (error) { errDiv.textContent = "Error conectando al servidor."; } 
+            finally { loader.classList.add('hidden'); }
+        });
+    </script>
+</body>
+</html>
