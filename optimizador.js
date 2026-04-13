@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === CONFIGURACIÓN ===
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzjthPZvtAH-R_H1h5GNMe0p5-8ofbODHenwXBHTmRArn_phXq8lwbwRq28s3_iO11/exec'; 
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7lJutmrJNJt9Ux9X70MSSQfiisI6iclxotM8cNmFOgrbqCS8XAlTPrXwdDRVuVwu3/exec'; 
 
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
