@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwzjthPZvtAH-R_H1h5GNMe0p5-8ofbODHenwXBHTmRArn_phXq8lwbwRq28s3_iO11/exec'; // <- REEMPLAZA
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7lJutmrJNJt9Ux9X70MSSQfiisI6iclxotM8cNmFOgrbqCS8XAlTPrXwdDRVuVwu3/exec'; // <- REEMPLAZA
     const currentPicker = userSession.username; 
     document.getElementById('current-picker-name').textContent = currentPicker;
 
